@@ -12,7 +12,7 @@ import com.fidel.inventario.persistence.mapper.ProductMapper;
 import com.fidel.inventario.persistence.repositorio.CrudProducto;
 
 @Repository
-public class ProductoRepository implements ProductRepository{
+public class ProductoRepository implements ProductRepository {
     @Autowired
     private CrudProducto crudProducto;
     @Autowired
@@ -26,20 +26,28 @@ public class ProductoRepository implements ProductRepository{
 
     @Override
     public ResponseEntity<Product> getById(long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getById'");
+        Producto producto = crudProducto.findById(id).orElse(null);
+        if (producto != null) {
+            return ResponseEntity.ok(mapper.toProduct(producto));
+        }
+        return ResponseEntity.notFound().build();
+
     }
 
     @Override
     public ResponseEntity<Product> save(Product product) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'save'");
+        Producto producto = mapper.toProducto(product);
+        return ResponseEntity.ok(mapper.toProduct(crudProducto.save(producto)));
     }
 
     @Override
     public ResponseEntity<Product> delete(long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+        Producto producto = crudProducto.findById(id).orElse(null);
+        if (producto != null) {
+            crudProducto.delete(producto);
+            return ResponseEntity.ok(mapper.toProduct(producto));
+        }
+        return ResponseEntity.notFound().build();
     }
-    
+
 }
